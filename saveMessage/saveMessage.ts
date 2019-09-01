@@ -13,7 +13,12 @@ export function handler(event, context, callback) {
 }
 
 async function saveAndSendMessage(record) {
-    const message = JSON.parse(record.body);
-    console.log(message);
+    const eventData = getEventData(record.body);
+    console.log(eventData);
     return Promise.resolve(null);
+}
+
+function getEventData(event) {
+    const message = JSON.parse(event);
+    return _.get(message, 'event-data');
 }
