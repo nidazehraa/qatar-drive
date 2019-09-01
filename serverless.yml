@@ -112,12 +112,28 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
+resources:
+  Resources:
+    SaveMessage:
+        Type: AWS::SNS::Topic
+        Properties:
+          DisplayName: 'this sns topic can forward the incoming message to wherever we want to use'
+          TopicName: save-message
+    emailsStatus:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.EMAILS_STATUS_TABLE}
+
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
