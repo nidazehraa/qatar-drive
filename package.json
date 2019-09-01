@@ -5,6 +5,12 @@
   "author": "Coding challenge for receeve",
   "license": "UNLICENSED",
   "private": true,
+  "scripts": {
+    "deploy": "serverless deploy --stage",
+    "predeploy": "npm run tsc",
+    "pretsc": "rimraf build",
+    "tsc": "tsc"
+  },
   "dependencies": {
     "aws-sdk": "^2.240.1",
     "lodash": "~4.17"
