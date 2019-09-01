@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "deploy": "serverless deploy --stage",
+    "deploy": "serverless deploy",
     "predeploy": "npm run tsc",
     "pretsc": "rimraf build",
     "tsc": "tsc"

@@ -23,10 +23,20 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: eu-central-1
+  stage: dev
+  environment:
+    EMAILS_STATUS_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
 
 
 # you can overwrite defaults here
-#  stage: dev
 #  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
@@ -60,14 +70,14 @@ provider:
 
 functions:
   save-message:
-    handler: build/sendMessage.handler
+    handler: build/saveMessage.handler
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
+    events:
+      - http:
+          path: mail/event
+          method: post
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
