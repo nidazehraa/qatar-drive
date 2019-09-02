@@ -2,10 +2,11 @@ import * as _ from 'lodash';
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid/v4';
 
+import { tableName, snsTopic } from './config';
+
 AWS.config.update({
     region: 'eu-central-1'
 });
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export function handler(event, context, callback) {
     const response = {
@@ -21,14 +22,13 @@ export function handler(event, context, callback) {
 
 async function saveAndSendMessage(record) {
     if (!record || !record.body) {
-        return Promise.reject(new Error('Invalid event'));
+        throw new Error('Invalid event');
     }
     const eventData = getEventData(record.body);
     if (!eventData) {
-        return Promise.reject(new Error('Invalid event'));
+        throw new Error('Invalid event');
     }
     await saveMessage(eventData);
-    console.log('djdjdjjdjdjdjdjdjdjdjdjdjdjdjj');
     await publishMessage(eventData);
 }
 
@@ -38,8 +38,9 @@ function getEventData(event) {
 }
 
 function saveMessage(message) {
+    const dynamoDb = new AWS.DynamoDB.DocumentClient();
     const messageInfo = {
-        TableName: process.env.EMAILS_STATUS_TABLE,
+        TableName: tableName,
         Item: { id: uuid(), message: JSON.stringify(message) }
     };
     return new Promise((resolve, reject) => {
@@ -53,12 +54,12 @@ function saveMessage(message) {
 }
 
 function publishMessage(message) {
-    console.log('Publishing Event');
     const sns = new AWS.SNS();
+    console.log('Event Received');
     const params = {
         Message: JSON.stringify(message),
         Subject: "email status",
-        TopicArn: process.env.SNS_TOPIC
+        TopicArn: snsTopic
     };
     return new Promise((resolve, reject) => {
         sns.publish(params, (error, response) => {
