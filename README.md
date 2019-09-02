@@ -6,6 +6,7 @@ To setup the whole environment, follow the steps.
 * Install all the dependencies by running `npm install`
 * Compile the code by running `npm run tsc`.
 * Finally run `npm run deploy` to deploy the serverless application.
+* If you want to run test cases, run `npm run test`
 
 ## Expected behavior:
 
