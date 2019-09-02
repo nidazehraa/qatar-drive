@@ -8,7 +8,6 @@ AWS.config.update({
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export function handler(event, context, callback) {
-
     const response = {
        statusCode: 200,
        body: JSON.stringify({
@@ -29,6 +28,7 @@ async function saveAndSendMessage(record) {
         return Promise.reject(new Error('Invalid event'));
     }
     await saveMessage(eventData);
+    console.log('djdjdjjdjdjdjdjdjdjdjdjdjdjdjj');
     await publishMessage(eventData);
 }
 

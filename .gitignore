@@ -8,4 +8,7 @@ jspm_packages
 # tsc build output
 build
 
+# test output
+coverage
+
 .DS_Store
