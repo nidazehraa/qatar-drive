@@ -21,7 +21,13 @@ export function handler(event, context, callback) {
 }
 
 async function saveAndSendMessage(record) {
+    if (!record || !record.body) {
+        return Promise.reject(new Error('Invalid event'));
+    }
     const eventData = getEventData(record.body);
+    if (!eventData) {
+        return Promise.reject(new Error('Invalid event'));
+    }
     await saveMessage(eventData);
     await publishMessage(eventData);
 }
