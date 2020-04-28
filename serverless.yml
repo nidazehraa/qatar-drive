@@ -1,22 +1,11 @@
-service: receeve-handler
+service: qatar-drive
 provider:
   name: aws
   runtime: nodejs10.x
   region: eu-central-1
   stage: dev
   environment:
-    EMAILS_STATUS_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-    SNS_TOPIC: ${self:resources.Outputs.SaveMessageSNS.Value}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - sns:publish
-      Resource: "*"
-
+    EMAILS_STATUS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-appointment
 functions:
   save-message:
     handler: build/saveMessage.handler
