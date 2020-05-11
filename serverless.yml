@@ -5,23 +5,30 @@ provider:
   region: eu-central-1
   stage: dev
   environment:
-    EMAILS_STATUS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-appointment
+    APPOINTMENT: ${self:service}-${opt:stage, self:provider.stage}-appointment
+    EMAIL: syed.qasim.sarfraz@gmail.com
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - sns:publish
+        - ses:SendEmail
+      Resource: "*"
+
 functions:
-  save-message:
-    handler: build/saveMessage.handler
+  add-appointment:
+    handler: build/routes/addAppointment.handler
     events:
       - http:
-          path: mail/event
+          path: appointment/
           method: post
 
 resources:
   Resources:
-    SaveMessage:
-        Type: AWS::SNS::Topic
-        Properties:
-          DisplayName: 'this sns topic can forward the incoming message to wherever we want to use'
-          TopicName: save-message
-    emailsStatus:
+    appointment:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
@@ -34,9 +41,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.EMAILS_STATUS_TABLE}
-  Outputs:
-    SaveMessageSNS:
-      Description: "Description for the output"
-      Value:
-        Ref: SaveMessage
+        TableName: ${self:provider.environment.APPOINTMENT}

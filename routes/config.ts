@@ -1,1 +1,2 @@
-export const tableName = process.env.EMAILS_STATUS_TABLE || 'test';
+export const tableName = process.env.APPOINTMENT || 'test';
+export const fromEmail = process.env.EMAIL || "test@info.com"
